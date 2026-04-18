@@ -1,0 +1,13 @@
+{
+  "carConnectivity": {
+    "connectors": [
+      {
+        "type": "volkswagen",
+        "config": {
+          "username": "you@example.com",
+          "password": "your-myvolkswagen-password"
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,14 @@
+# Declarative datasource. Grafana reads this on boot and keeps the
+# datasource in sync. The `uid` is what dashboards reference — keep it
+# stable.
+
+apiVersion: 1
+
+datasources:
+  - name: ID7 SQLite
+    uid: id7-sqlite
+    type: frser-sqlite-datasource
+    access: proxy
+    isDefault: true
+    jsonData:
+      path: /data/id7.db

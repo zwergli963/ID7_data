@@ -1,0 +1,16 @@
+[project]
+name = "id7-data"
+version = "0.0.1"
+description = "Collect and visualize data from a Volkswagen ID.7 via WeConnect"
+requires-python = ">=3.11"
+dependencies = [
+    "carconnectivity>=0.6",
+    "carconnectivity-connector-volkswagen>=0.6",
+]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+py-modules = ["collect", "derive_sessions", "init_db"]

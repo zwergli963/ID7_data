@@ -1,0 +1,17 @@
+# Tells Grafana to load every *.json file in /var/lib/grafana/dashboards
+# as a dashboard. Editable via the UI, but changes live in Grafana's
+# internal DB unless you export and overwrite the JSON file.
+
+apiVersion: 1
+
+providers:
+  - name: id7
+    orgId: 1
+    folder: ""
+    type: file
+    disableDeletion: false
+    editable: true
+    updateIntervalSeconds: 30
+    allowUiUpdates: true
+    options:
+      path: /var/lib/grafana/dashboards

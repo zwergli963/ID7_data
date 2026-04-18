@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.id7data.collect</string>
+
+    <!-- Absolute paths everywhere — launchd runs with a minimal environment. -->
+    <key>ProgramArguments</key>
+    <array>
+        <string>/Users/tomhausemer/Coding/ID7_data/.venv/bin/python</string>
+        <string>/Users/tomhausemer/Coding/ID7_data/collect.py</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>/Users/tomhausemer/Coding/ID7_data</string>
+
+    <!-- Run every 300 seconds (5 minutes). -->
+    <key>StartInterval</key>
+    <integer>300</integer>
+
+    <!-- Run once immediately after load, so we don't wait 5 min for the first row. -->
+    <key>RunAtLoad</key>
+    <true/>
+
+    <key>StandardOutPath</key>
+    <string>/Users/tomhausemer/Coding/ID7_data/logs/collect.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/tomhausemer/Coding/ID7_data/logs/collect.log</string>
+</dict>
+</plist>

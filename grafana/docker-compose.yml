@@ -1,0 +1,38 @@
+# Grafana OSS with the community SQLite datasource plugin.
+#
+# The SQLite file at ../data/id7.db is mounted read-only into the container
+# at /data/id7.db. Every dashboard + datasource is provisioned from files
+# in ./provisioning and ./dashboards so nothing lives in the UI only.
+#
+# Usage:
+#     cd grafana
+#     docker compose up -d          # start in background
+#     docker compose logs -f        # watch startup
+#     docker compose down           # stop
+#     docker compose restart        # restart (dashboards persist)
+
+services:
+  grafana:
+    image: grafana/grafana-oss:latest
+    container_name: id7-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      # Install the frser SQLite plugin on first boot.
+      - GF_INSTALL_PLUGINS=frser-sqlite-datasource
+      # Local-dev password. Change if you care.
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      # Point Grafana at our provisioning files.
+      - GF_PATHS_PROVISIONING=/etc/grafana/provisioning
+    volumes:
+      # Provisioned datasources + dashboard providers (read-only).
+      - ./provisioning:/etc/grafana/provisioning:ro
+      # Dashboard JSON files the provider loads (read-only).
+      - ./dashboards:/var/lib/grafana/dashboards:ro
+      # Our SQLite database. Read-only so nothing in Grafana can mutate it.
+      - ../data:/data:ro
+      # Grafana's own internal state (user accounts, dashboard edits, etc.)
+      - grafana-data:/var/lib/grafana
+
+volumes:
+  grafana-data:

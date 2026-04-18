@@ -1,0 +1,266 @@
+{
+  "title": "ID.7 Overview",
+  "uid": "id7-overview",
+  "tags": ["id7"],
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "1m",
+  "time": {"from": "now-7d", "to": "now"},
+  "panels": [
+    {
+      "id": 1,
+      "type": "stat",
+      "title": "State of Charge",
+      "gridPos": {"x": 0, "y": 0, "w": 6, "h": 4},
+      "datasource": {"type": "frser-sqlite-datasource", "uid": "id7-sqlite"},
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "max": 100,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {"color": "red", "value": null},
+              {"color": "orange", "value": 20},
+              {"color": "yellow", "value": 40},
+              {"color": "green", "value": 60}
+            ]
+          }
+        }
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {"type": "frser-sqlite-datasource", "uid": "id7-sqlite"},
+          "queryType": "table",
+          "rawQuery": true,
+          "rawQueryText": "SELECT captured_at AS time, soc_percent FROM readings ORDER BY captured_at DESC LIMIT 1",
+          "timeColumns": ["time"]
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "type": "stat",
+      "title": "Range",
+      "gridPos": {"x": 6, "y": 0, "w": 6, "h": 4},
+      "datasource": {"type": "frser-sqlite-datasource", "uid": "id7-sqlite"},
+      "fieldConfig": {"defaults": {"unit": "lengthkm", "decimals": 0}},
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {"type": "frser-sqlite-datasource", "uid": "id7-sqlite"},
+          "queryType": "table",
+          "rawQuery": true,
+          "rawQueryText": "SELECT captured_at AS time, range_km FROM readings ORDER BY captured_at DESC LIMIT 1",
+          "timeColumns": ["time"]
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "type": "stat",
+      "title": "Outside temperature",
+      "gridPos": {"x": 12, "y": 0, "w": 6, "h": 4},
+      "datasource": {"type": "frser-sqlite-datasource", "uid": "id7-sqlite"},
+      "fieldConfig": {"defaults": {"unit": "celsius", "decimals": 1}},
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {"type": "frser-sqlite-datasource", "uid": "id7-sqlite"},
+          "queryType": "table",
+          "rawQuery": true,
+          "rawQueryText": "SELECT captured_at AS time, outside_temp_k - 273.15 AS temp_c FROM readings WHERE outside_temp_k IS NOT NULL ORDER BY captured_at DESC LIMIT 1",
+          "timeColumns": ["time"]
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "type": "stat",
+      "title": "Doors",
+      "gridPos": {"x": 18, "y": 0, "w": 6, "h": 4},
+      "datasource": {"type": "frser-sqlite-datasource", "uid": "id7-sqlite"},
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [
+            {"type": "value", "options": {"locked": {"color": "green"}, "unlocked": {"color": "red"}}}
+          ],
+          "color": {"mode": "thresholds"},
+          "thresholds": {"mode": "absolute", "steps": [{"color": "gray", "value": null}]}
+        }
+      },
+      "options": {
+        "colorMode": "value",
+        "textMode": "value",
+        "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {"type": "frser-sqlite-datasource", "uid": "id7-sqlite"},
+          "queryType": "table",
+          "rawQuery": true,
+          "rawQueryText": "SELECT captured_at AS time, doors_lock FROM readings ORDER BY captured_at DESC LIMIT 1",
+          "timeColumns": ["time"]
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "type": "timeseries",
+      "title": "State of Charge over time",
+      "gridPos": {"x": 0, "y": 4, "w": 12, "h": 8},
+      "datasource": {"type": "frser-sqlite-datasource", "uid": "id7-sqlite"},
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "max": 100,
+          "custom": {"drawStyle": "line", "lineInterpolation": "stepAfter", "fillOpacity": 10}
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {"type": "frser-sqlite-datasource", "uid": "id7-sqlite"},
+          "queryType": "time series",
+          "rawQuery": true,
+          "rawQueryText": "SELECT captured_at AS time, soc_percent FROM readings ORDER BY captured_at",
+          "timeColumns": ["time"]
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "type": "timeseries",
+      "title": "Odometer",
+      "gridPos": {"x": 12, "y": 4, "w": 12, "h": 8},
+      "datasource": {"type": "frser-sqlite-datasource", "uid": "id7-sqlite"},
+      "fieldConfig": {
+        "defaults": {
+          "unit": "lengthkm",
+          "custom": {"drawStyle": "line", "lineInterpolation": "stepAfter"}
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {"type": "frser-sqlite-datasource", "uid": "id7-sqlite"},
+          "queryType": "time series",
+          "rawQuery": true,
+          "rawQueryText": "SELECT captured_at AS time, odometer_km FROM readings ORDER BY captured_at",
+          "timeColumns": ["time"]
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "type": "table",
+      "title": "Charging sessions",
+      "gridPos": {"x": 0, "y": 12, "w": 12, "h": 8},
+      "datasource": {"type": "frser-sqlite-datasource", "uid": "id7-sqlite"},
+      "fieldConfig": {"defaults": {}},
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {"type": "frser-sqlite-datasource", "uid": "id7-sqlite"},
+          "queryType": "table",
+          "rawQuery": true,
+          "rawQueryText": "SELECT started_at, ended_at, start_soc, end_soc, ROUND(kwh_added, 2) AS kwh_added, peak_power_kw, ROUND(avg_power_kw, 2) AS avg_power_kw, ROUND(duration_seconds / 60.0, 1) AS minutes, location_address FROM charging_sessions ORDER BY started_at DESC LIMIT 50",
+          "timeColumns": []
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "type": "barchart",
+      "title": "kWh added per day",
+      "gridPos": {"x": 12, "y": 12, "w": 12, "h": 8},
+      "datasource": {"type": "frser-sqlite-datasource", "uid": "id7-sqlite"},
+      "fieldConfig": {"defaults": {"unit": "kwatth"}},
+      "options": {"xField": "day", "orientation": "vertical", "showValue": "auto"},
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {"type": "frser-sqlite-datasource", "uid": "id7-sqlite"},
+          "queryType": "table",
+          "rawQuery": true,
+          "rawQueryText": "SELECT date(started_at) AS day, ROUND(SUM(kwh_added), 2) AS kwh FROM charging_sessions GROUP BY date(started_at) ORDER BY day",
+          "timeColumns": []
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "type": "table",
+      "title": "Trips",
+      "gridPos": {"x": 0, "y": 20, "w": 12, "h": 8},
+      "datasource": {"type": "frser-sqlite-datasource", "uid": "id7-sqlite"},
+      "fieldConfig": {"defaults": {}},
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {"type": "frser-sqlite-datasource", "uid": "id7-sqlite"},
+          "queryType": "table",
+          "rawQuery": true,
+          "rawQueryText": "SELECT started_at, ROUND(distance_km, 1) AS km, start_soc, end_soc, ROUND(kwh_used, 2) AS kwh_used, ROUND(consumption_kwh_per_100km, 1) AS kwh_per_100km, start_address, end_address FROM trips ORDER BY started_at DESC LIMIT 50",
+          "timeColumns": []
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "type": "geomap",
+      "title": "Last known position",
+      "gridPos": {"x": 12, "y": 20, "w": 12, "h": 8},
+      "datasource": {"type": "frser-sqlite-datasource", "uid": "id7-sqlite"},
+      "options": {
+        "view": {"id": "coords", "lat": 49.57, "lon": 6.15, "zoom": 11},
+        "basemap": {
+          "type": "xyz",
+          "name": "CartoDB Dark Matter",
+          "config": {
+            "url": "https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png",
+            "attribution": "© OpenStreetMap contributors, © CARTO"
+          }
+        },
+        "layers": [
+          {
+            "type": "markers",
+            "name": "Positions",
+            "config": {"size": {"fixed": 10}, "color": {"fixed": "orange"}, "fillOpacity": 0.9},
+            "location": {"mode": "coords", "latitude": "lat", "longitude": "lon"}
+          }
+        ]
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {"type": "frser-sqlite-datasource", "uid": "id7-sqlite"},
+          "queryType": "table",
+          "rawQuery": true,
+          "rawQueryText": "SELECT lat, lon, captured_at FROM readings WHERE lat IS NOT NULL AND lon IS NOT NULL ORDER BY captured_at DESC LIMIT 200",
+          "timeColumns": []
+        }
+      ]
+    }
+  ]
+}
