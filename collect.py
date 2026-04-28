@@ -29,11 +29,21 @@ from __future__ import annotations
 
 import json
 import logging
+import signal
 import sqlite3
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+
+# Kill the process if a single poll takes longer than this.
+# Prevents the collector from hanging on a stalled VW API connection.
+TIMEOUT_SECONDS = 90
+
+
+def _raise_timeout(signum: int, frame: object) -> None:
+    raise TimeoutError(f"Collector timed out after {TIMEOUT_SECONDS}s — VW API may be unresponsive")
+
 
 from carconnectivity import carconnectivity
 from carconnectivity.json_util import ExtendedWithNullEncoder
@@ -199,6 +209,8 @@ def main() -> int:
         config=config_dict,
         tokenstore_file=str(TOKENSTORE),
     )
+    signal.signal(signal.SIGALRM, _raise_timeout)
+    signal.alarm(TIMEOUT_SECONDS)
     inserted = skipped = 0
     try:
         cc.startup()
@@ -244,6 +256,7 @@ def main() -> int:
 
         return 0
     finally:
+        signal.alarm(0)  # cancel the alarm so shutdown() can complete cleanly
         cc.shutdown()
 
 
