@@ -20,7 +20,7 @@ A hobby / learning project to pull data from a **Volkswagen ID.7 Tourer** out of
 | Auth path | MyVolkswagen email + password (OAuth flow handled by the library) | No commercial account / no OAuth consent flow needed. Unofficial but works today. |
 | Storage | **SQLite** (single `data/id7.db` file) | Zero setup, built into Python, portable, fine for < 1 GB of time-series data. |
 | Scheduling | **Linux cron** (5-minute interval) on Hetzner Cloud VPS | Runs 24/7 regardless of whether the Mac is on. Dedupes by content hash so rows are only added when the car actually reports something new. |
-| Hosting | **Hetzner Cloud CX11** (~€3.29/month) | Cheap VPS in Germany (GDPR-compliant). Grafana accessible from anywhere via public IP. |
+| Hosting | **Hetzner Cloud CX22** (~€4.15/month) — IP `62.238.23.185`, project at `/opt/id7data` | Cheap VPS in Germany (GDPR-compliant). Grafana accessible from anywhere via public IP. |
 | Dashboarding | **Grafana OSS** (Docker) + [`frser-sqlite-datasource`](https://github.com/fr-ser/grafana-sqlite-datasource) plugin | Industry-standard time-series dashboards, great looking, minimal chart-writing code. Runs in a single container. |
 
 ### Paths considered and *not* taken
@@ -63,9 +63,9 @@ VW Cloud (WeConnect API)
 
 ## Vehicle reference data
 
-- **Model:** Volkswagen ID.7 Tourer
+- **Model:** Volkswagen ID.7 Tourer Pro S
 - **VIN:** `WVWZZZED4SE018925`
-- **Usable battery capacity:** 77 kWh (82 kWh gross) — parameterised in `metadata.battery_kwh_usable` so it can be adjusted for the Tourer S variant (86 kWh usable).
+- **Usable battery capacity:** 86 kWh (91 kWh gross) — stored in `metadata.battery_kwh_usable` and used by `derive_sessions.py` to convert SoC % into kWh added per charging session. Adjust to 77 for the standard Pro variant.
 
 ## Current state
 
@@ -79,6 +79,7 @@ VW Cloud (WeConnect API)
 - **Roadmap / next steps:** `docs/roadmap.md`
 - **Active & past feature plans:** `docs/plans/`
 - **Context for Claude:** `CLAUDE.md` (project root)
+- **Production server:** `ssh root@62.238.23.185` — project directory `/opt/id7data`
 
 ## Gotchas learned so far
 
