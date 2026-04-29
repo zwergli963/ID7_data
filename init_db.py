@@ -18,10 +18,10 @@ SCHEMA_PATH = HERE / "schema.sql"
 DB_PATH = HERE / "data" / "id7.db"
 
 # Seed values for the `metadata` key/value table.
-# Edit battery_kwh_usable to 86 if/when we switch to the Tourer S.
+# battery_kwh_usable: 86 for the Pro S (77 kWh net for the standard Pro).
 METADATA_SEED: dict[str, str] = {
     "schema_version": "1",
-    "battery_kwh_usable": "77",
+    "battery_kwh_usable": "86",
     "last_poll_at": "",
 }
 
